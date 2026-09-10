@@ -1,0 +1,32 @@
+# Visual Studio служебные файлы
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Папки сборки
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+bld/
+
+# Visual Studio cache
+ipch/
+*.aps
+*.ncb
+*.opt
+*.plg
+*.sdf
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Пользовательские файлы
+*.cache
+*.pyc
+*.db
