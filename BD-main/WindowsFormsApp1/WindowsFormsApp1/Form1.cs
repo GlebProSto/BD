@@ -14,6 +14,7 @@ namespace WindowsFormsApp1
     {
         public Form1()
         {
+            // коммент
             InitializeComponent();
             button2.Enabled = false;
             button3.Enabled = false;
