@@ -9,6 +9,7 @@ namespace WindowsFormsApp1
         private DataSet1 dataSet1;
         private bool isNewVisit;
         private int currentVisitId;
+        private int currentClientId;
 
         // Конструктор принимает DataSet, флаг (новая запись или редактирование) и ID записи
         public Form2(DataSet1 ds, bool isNew, int id = 0)
@@ -17,6 +18,20 @@ namespace WindowsFormsApp1
             this.dataSet1 = ds;
             this.isNewVisit = isNew;
             this.currentVisitId = id;
+            this.StartPosition = FormStartPosition.CenterParent;
+
+            dateTimePicker1.Format = DateTimePickerFormat.Custom;
+            dateTimePicker1.CustomFormat = "dd.MM.yyyy HH:mm";
+            dateTimePicker1.ShowUpDown = true;
+            dateTimePicker2.Format = DateTimePickerFormat.Custom;
+            dateTimePicker2.CustomFormat = "dd.MM.yyyy HH:mm";
+            dateTimePicker2.ShowUpDown = true;
+
+            // При добавлении нового посещения параметр id может содержать ID клиента
+            if (isNew && id > 0)
+            {
+                this.currentClientId = id;
+            }
 
             if (!isNewVisit)
             {
@@ -42,13 +57,23 @@ namespace WindowsFormsApp1
         {
             if (isNewVisit)
             {
+                if (currentClientId <= 0)
+                {
+                    MessageBox.Show("Нельзя добавить посещение без выбора клиента.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
                 // Создаем новую строку в таблице Visit
                 DataRow newRow = dataSet1.Visit.NewRow();
+                // Приведение значений к нужным типам (DataSet ожидает DateTime)
                 newRow["DateTimeIn"] = dateTimePicker1.Value;
                 newRow["DateTimeOff"] = dateTimePicker2.Value;
                 newRow["ZoneVisit"] = textBox1.Text;
-                // Примечание: поле FK_C (ID клиента) пока оставляем пустым или 0, 
-                // если нужно привязать к клиенту, это делается через Form1
+                // Если передан ID клиента — устанавливаем внешний ключ
+                if (currentClientId > 0)
+                {
+                    newRow["FK_C"] = currentClientId;
+                }
 
                 dataSet1.Visit.Rows.Add(newRow);
                 dataSet1.Visit.AcceptChanges();
@@ -74,6 +99,19 @@ namespace WindowsFormsApp1
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        private System.Windows.Forms.ContextMenuStrip CreateBasicContextMenu()
+        {
+            var cms = new System.Windows.Forms.ContextMenuStrip();
+            cms.Items.Add("Отменить", null, (s, e) => { SendKeys.Send("^z"); }).Enabled = true;
+            cms.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+            cms.Items.Add("Вырезать", null, (s, e) => { SendKeys.Send("^x"); });
+            cms.Items.Add("Копировать", null, (s, e) => { SendKeys.Send("^c"); });
+            cms.Items.Add("Вставить", null, (s, e) => { SendKeys.Send("^v"); });
+            cms.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+            cms.Items.Add("Выделить всё", null, (s, e) => { SendKeys.Send("^a"); });
+            return cms;
         }
     }
 }

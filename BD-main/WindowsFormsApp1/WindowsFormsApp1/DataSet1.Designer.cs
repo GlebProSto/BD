@@ -773,9 +773,9 @@ namespace WindowsFormsApp1 {
                 base.Columns.Add(this.columnID_V);
                 this.columnFK_C = new global::System.Data.DataColumn("FK_C", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnFK_C);
-                this.columnDateTimeIn = new global::System.Data.DataColumn("DateTimeIn", typeof(string), null, global::System.Data.MappingType.Element);
+                this.columnDateTimeIn = new global::System.Data.DataColumn("DateTimeIn", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnDateTimeIn);
-                this.columnDateTimeOff = new global::System.Data.DataColumn("DateTimeOff", typeof(string), null, global::System.Data.MappingType.Element);
+                this.columnDateTimeOff = new global::System.Data.DataColumn("DateTimeOff", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnDateTimeOff);
                 this.columnZoneVisit = new global::System.Data.DataColumn("ZoneVisit", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnZoneVisit);
@@ -784,8 +784,8 @@ namespace WindowsFormsApp1 {
                 this.columnID_V.AutoIncrement = true;
                 this.columnID_V.AutoIncrementSeed = 1;
                 this.columnID_V.Unique = true;
-                this.columnFK_C.AutoIncrement = true;
-                this.columnFK_C.AutoIncrementSeed = 1;
+                this.columnFK_C.AutoIncrement = false;
+                this.columnFK_C.AutoIncrementSeed = 0;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1171,9 +1171,6 @@ namespace WindowsFormsApp1 {
             }
         }
         
-        /// <summary>
-        ///Row event argument class
-        ///</summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         public class ClientRowChangeEvent : global::System.EventArgs {
             
@@ -1204,10 +1201,7 @@ namespace WindowsFormsApp1 {
                 }
             }
         }
-        
-        /// <summary>
-        ///Row event argument class
-        ///</summary>
+
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         public class VisitRowChangeEvent : global::System.EventArgs {
             

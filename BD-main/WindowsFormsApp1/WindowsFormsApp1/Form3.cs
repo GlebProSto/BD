@@ -19,6 +19,18 @@ namespace WindowsFormsApp1
             this.dataSet1 = dataSet1;
             this.newClient = newClient;
 
+            // Центрирование диалога над родителем
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+
+            // Ограничение ввода в поле телефона: только цифры и '+' в начале
+            try
+            {
+                this.textBox2.KeyPress += TextBoxPhone_KeyPress;
+                this.textBox1.ContextMenuStrip = CreateBasicContextMenu();
+                this.textBox2.ContextMenuStrip = CreateBasicContextMenu();
+            }
+            catch { }
+
             if (!newClient)
             {
                 this.Text = "Редактирование клиента";
@@ -72,6 +84,11 @@ namespace WindowsFormsApp1
             if (textBox2.Text == "")
                 FillingErrors = FillingErrors + "Телефон не заполнен.\n";
 
+            if (!System.Text.RegularExpressions.Regex.IsMatch(textBox2.Text.Trim(), "^(8|\\+7)\\d{10}$"))
+            {
+                FillingErrors += "Телефон должен начинаться с 8 или +7 и содержать далее 10 цифр.\n";
+            }
+
             if (FillingErrors != "")
             {
                 MessageBox.Show(FillingErrors, "Ошибка", MessageBoxButtons.OK,
@@ -90,6 +107,46 @@ namespace WindowsFormsApp1
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
+        }
+
+        private void TextBoxPhone_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+        {
+            // Разрешаем цифры и управляющие символы
+            if (char.IsControl(e.KeyChar))
+                return;
+
+            TextBox tb = sender as TextBox;
+            if (tb == null)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            if (e.KeyChar == '+')
+            {
+                // '+' только в начале
+                if (tb.SelectionStart != 0 || tb.Text.Contains("+"))
+                    e.Handled = true;
+                return;
+            }
+
+            if (!char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private System.Windows.Forms.ContextMenuStrip CreateBasicContextMenu()
+        {
+            var cms = new System.Windows.Forms.ContextMenuStrip();
+            cms.Items.Add("Отменить", null, (s, e) => { SendKeys.Send("^z"); }).Enabled = true;
+            cms.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+            cms.Items.Add("Вырезать", null, (s, e) => { SendKeys.Send("^x"); });
+            cms.Items.Add("Копировать", null, (s, e) => { SendKeys.Send("^c"); });
+            cms.Items.Add("Вставить", null, (s, e) => { SendKeys.Send("^v"); });
+            cms.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+            cms.Items.Add("Выделить всё", null, (s, e) => { SendKeys.Send("^a"); });
+            return cms;
         }
 
         private void button2_Click(object sender, EventArgs e)
