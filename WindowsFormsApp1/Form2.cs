@@ -30,7 +30,6 @@ namespace WindowsFormsApp1
             {
                 this.currentClientId = id;
             }
-
             if (!isNewVisit)
             {
                 this.Text = "Редактирование посещения";
