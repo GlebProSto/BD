@@ -137,7 +137,6 @@ namespace WindowsFormsApp1
             }
         }
 
-        // === ВОТ ЭТОТ МЕТОД БЫЛ ДОБАВЛЕН ===
         private void TextBoxFIO_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
         {
             // Разрешаем управляющие символы (Backspace, Delete и т.д.)
@@ -157,7 +156,6 @@ namespace WindowsFormsApp1
                 e.Handled = true;
             }
         }
-        // ====================================
 
         private System.Windows.Forms.ContextMenuStrip CreateBasicContextMenu()
         {

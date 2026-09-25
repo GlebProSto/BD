@@ -230,7 +230,6 @@ namespace WindowsFormsApp1
             }
             catch { }
 
-            // === ВАЖНО: В КОНЦЕ Form1_Load принудительно делаем ВСЕ кнопки серыми ===
             MakeGray(button2);
             MakeGray(button3);
             MakeGray(button4);
