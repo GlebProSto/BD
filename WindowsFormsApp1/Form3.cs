@@ -92,9 +92,8 @@ namespace WindowsFormsApp1
 
             if (FillingErrors != "")
             {
-                MessageBox.Show(FillingErrors, "Ошибка", MessageBoxButtons.OK,
-                    MessageBoxIcon.Error, MessageBoxDefaultButton.Button1,
-                    MessageBoxOptions.DefaultDesktopOnly);
+                MessageBox.Show(this, FillingErrors, "Ошибка", MessageBoxButtons.OK,
+                    MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
                 saveb = true;
             }
         }

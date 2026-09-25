@@ -14,12 +14,23 @@ namespace WindowsFormsApp1
             InitializeComponent();
             this.FormClosing += Form1_FormClosing;
 
-            try
+            // ==========================================================
+            // ГАРАНТИРОВАННОЕ УДАЛЕНИЕ ПАНЕЛИ НАВИГАЦИИ (BindingNavigator)
+            // ==========================================================
+            if (this.bindingNavigator1 != null)
             {
-                if (this.clientBindingNavigatorSaveItem != null)
-                    this.clientBindingNavigatorSaveItem.Click += clientBindingNavigatorSaveItem_Click;
+                this.Controls.Remove(this.bindingNavigator1);
+                this.bindingNavigator1.Dispose();
             }
-            catch { }
+            // ==========================================================
+
+            // === УБИРАЕМ СТРОКИ ДОБАВЛЕНИЯ (СО ЗВЁЗДОЧКОЙ) ===
+            if (this.clientDataGridView != null)
+                this.clientDataGridView.AllowUserToAddRows = false;
+
+            if (this.visitDataGridView != null)
+                this.visitDataGridView.AllowUserToAddRows = false;
+            // =================================================
 
             // При запуске делаем все кнопки редактирования/удаления серыми
             MakeGray(button2);
@@ -227,6 +238,7 @@ namespace WindowsFormsApp1
                 }
                 visitDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                 visitDataGridView.ContextMenuStrip = null;
+
             }
             catch { }
 
@@ -249,6 +261,8 @@ namespace WindowsFormsApp1
             }
         }
 
+        // Этот метод оставлен на случай, если он вызывается из Designer.cs, 
+        // но теперь он просто дублирует логику FormClosing.
         private void clientBindingNavigatorSaveItem_Click(object sender, EventArgs e)
         {
             try
