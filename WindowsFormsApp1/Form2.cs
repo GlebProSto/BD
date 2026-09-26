@@ -30,6 +30,7 @@ namespace WindowsFormsApp1
             {
                 this.currentClientId = id;
             }
+
             if (!isNewVisit)
             {
                 this.Text = "Редактирование посещения";
@@ -39,8 +40,16 @@ namespace WindowsFormsApp1
                     DataRow row = rows[0];
                     dateTimePicker1.Value = Convert.ToDateTime(row["DateTimeIn"]);
                     dateTimePicker2.Value = Convert.ToDateTime(row["DateTimeOff"]);
-                    textBox1.Text = row["ZoneVisit"].ToString();
 
+                    // Устанавливаем выбранную зону в ComboBox
+                    string zone = row["ZoneVisit"].ToString();
+                    int index = comboBox1.Items.IndexOf(zone);
+                    if (index >= 0)
+                        comboBox1.SelectedIndex = index;
+                    else
+                        comboBox1.SelectedIndex = 0;
+
+                    // Получаем и показываем ФИО клиента в заголовке
                     if (row["FK_C"] != DBNull.Value)
                     {
                         int clientId = Convert.ToInt32(row["FK_C"]);
@@ -58,6 +67,7 @@ namespace WindowsFormsApp1
             else
             {
                 this.Text = "Добавление посещения";
+                comboBox1.SelectedIndex = 0; // По умолчанию первый пункт
 
                 if (currentClientId > 0)
                 {
@@ -84,7 +94,7 @@ namespace WindowsFormsApp1
                 DataRow newRow = dataSet1.Visit.NewRow();
                 newRow["DateTimeIn"] = dateTimePicker1.Value;
                 newRow["DateTimeOff"] = dateTimePicker2.Value;
-                newRow["ZoneVisit"] = textBox1.Text;
+                newRow["ZoneVisit"] = comboBox1.Text; // Берём из ComboBox
                 newRow["FK_C"] = currentClientId;
 
                 dataSet1.Visit.Rows.Add(newRow);
@@ -97,7 +107,7 @@ namespace WindowsFormsApp1
                 {
                     rows[0]["DateTimeIn"] = dateTimePicker1.Value;
                     rows[0]["DateTimeOff"] = dateTimePicker2.Value;
-                    rows[0]["ZoneVisit"] = textBox1.Text;
+                    rows[0]["ZoneVisit"] = comboBox1.Text; // Берём из ComboBox
                     rows[0]["FK_C"] = currentClientId;
                     dataSet1.Visit.AcceptChanges();
                 }

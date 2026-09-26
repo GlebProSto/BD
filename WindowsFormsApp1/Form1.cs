@@ -14,25 +14,25 @@ namespace WindowsFormsApp1
             InitializeComponent();
             this.FormClosing += Form1_FormClosing;
 
-            // ==========================================================
-            // ГАРАНТИРОВАННОЕ УДАЛЕНИЕ ПАНЕЛИ НАВИГАЦИИ (BindingNavigator)
-            // ==========================================================
+
             if (this.bindingNavigator1 != null)
             {
                 this.Controls.Remove(this.bindingNavigator1);
                 this.bindingNavigator1.Dispose();
             }
-            // ==========================================================
 
-            // === УБИРАЕМ СТРОКИ ДОБАВЛЕНИЯ (СО ЗВЁЗДОЧКОЙ) ===
             if (this.clientDataGridView != null)
                 this.clientDataGridView.AllowUserToAddRows = false;
 
             if (this.visitDataGridView != null)
                 this.visitDataGridView.AllowUserToAddRows = false;
-            // =================================================
 
-            // При запуске делаем все кнопки редактирования/удаления серыми
+            try
+            {
+                this.clientBindingSource.CurrentChanged += ClientBindingSource_CurrentChanged;
+            }
+            catch { }
+
             MakeGray(button2);
             MakeGray(button3);
             MakeGray(button4);
@@ -61,6 +61,77 @@ namespace WindowsFormsApp1
             btn.Cursor = Cursors.Default;
         }
 
+        // === ГЛАВНОЕ ИСПРАВЛЕНИЕ: Фильтрация посещений + СБРОС ВЫДЕЛЕНИЯ ===
+        private void ApplyVisitFilter()
+        {
+            try
+            {
+                int currentClientId = 0;
+                if (clientBindingSource.Current != null)
+                {
+                    var drv = clientBindingSource.Current as DataRowView;
+                    if (drv != null && drv.Row.Table.Columns.Contains("ID_C"))
+                    {
+                        var idVal = drv["ID_C"];
+                        if (idVal != null && idVal != DBNull.Value)
+                            int.TryParse(idVal.ToString(), out currentClientId);
+                    }
+                }
+
+                if (currentClientId > 0)
+                {
+                    // Показываем посещения ТОЛЬКО выбранного клиента
+                    visitBindingSource.Filter = $"FK_C = {currentClientId}";
+                }
+                else
+                {
+                    // Если клиент НЕ выбран, скрываем все посещения
+                    visitBindingSource.Filter = "1=0";
+                }
+
+                // === НОВОЕ: СБРАСЫВАЕМ СИНЕЕ ВЫДЕЛЕНИЕ В ТАБЛИЦЕ ПОСЕЩЕНИЙ ===
+                visitDataGridView.ClearSelection();
+                if (visitDataGridView.CurrentRow != null)
+                {
+                    visitDataGridView.CurrentRow.Selected = false;
+                }
+                // ============================================================
+
+                // Обновляем состояние кнопок посещений после применения фильтра
+                if (visitBindingSource.Count > 0 && visitBindingSource.Current != null)
+                {
+                    MakeWhite(button5);
+                    MakeWhite(button6);
+                }
+                else
+                {
+                    MakeGray(button5);
+                    MakeGray(button6);
+                }
+            }
+            catch { }
+        }
+
+        private void ClientBindingSource_CurrentChanged(object sender, EventArgs e)
+        {
+            ApplyVisitFilter();
+
+            // Если клиент выбран, активируем кнопки работы с клиентом
+            if (clientBindingSource.Current != null && clientBindingSource.Count > 0)
+            {
+                MakeWhite(button2);
+                MakeWhite(button3);
+                MakeWhite(button4);
+            }
+            else
+            {
+                MakeGray(button2);
+                MakeGray(button3);
+                MakeGray(button4);
+            }
+        }
+        // ================================================
+
         private void button1_Click(object sender, EventArgs e)
         {
             Form3 f3 = new Form3(dataSet1, true);
@@ -73,6 +144,9 @@ namespace WindowsFormsApp1
                 MakeWhite(button3);
                 MakeWhite(button4);
             }
+
+            // Применяем фильтр после добавления клиента
+            ApplyVisitFilter();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -114,7 +188,12 @@ namespace WindowsFormsApp1
                         MakeGray(button2);
                         MakeGray(button3);
                         MakeGray(button4);
+                        MakeGray(button5);
+                        MakeGray(button6);
                     }
+
+                    // Применяем фильтр после удаления
+                    ApplyVisitFilter();
                 }
             }
         }
@@ -247,6 +326,9 @@ namespace WindowsFormsApp1
             MakeGray(button4);
             MakeGray(button5);
             MakeGray(button6);
+
+            // Применяем фильтр при загрузке
+            ApplyVisitFilter();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -261,8 +343,6 @@ namespace WindowsFormsApp1
             }
         }
 
-        // Этот метод оставлен на случай, если он вызывается из Designer.cs, 
-        // но теперь он просто дублирует логику FormClosing.
         private void clientBindingNavigatorSaveItem_Click(object sender, EventArgs e)
         {
             try

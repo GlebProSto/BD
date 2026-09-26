@@ -17,7 +17,7 @@
 
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox(); // Заменили TextBox на ComboBox
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
@@ -27,13 +27,18 @@
             this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
             this.SuspendLayout();
             // 
-            // textBox1
+            // comboBox1 (Зона - выпадающий список)
             // 
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.textBox1.Location = new System.Drawing.Point(180, 135);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(200, 30);
-            this.textBox1.TabIndex = 0;
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList; // Только выбор из списка
+            this.comboBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "Спортивный зал",
+            "Бассейн"});
+            this.comboBox1.Location = new System.Drawing.Point(185, 135);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(200, 33);
+            this.comboBox1.TabIndex = 0;
             // 
             // label1
             // 
@@ -80,7 +85,7 @@
             // dateTimePicker1
             // 
             this.dateTimePicker1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.dateTimePicker1.Location = new System.Drawing.Point(185, 25); // Сдвинул ещё правее
+            this.dateTimePicker1.Location = new System.Drawing.Point(185, 25);
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(200, 30);
             this.dateTimePicker1.TabIndex = 5;
@@ -98,15 +103,16 @@
             // dateTimePicker2
             // 
             this.dateTimePicker2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.dateTimePicker2.Location = new System.Drawing.Point(185, 75); // Сдвинул ещё правее
+            this.dateTimePicker2.Location = new System.Drawing.Point(185, 75);
             this.dateTimePicker2.Name = "dateTimePicker2";
             this.dateTimePicker2.Size = new System.Drawing.Size(200, 30);
             this.dateTimePicker2.TabIndex = 7;
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(430, 250); // Чуть шире
+            this.ClientSize = new System.Drawing.Size(430, 250);
             this.Controls.Add(this.dateTimePicker2);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.dateTimePicker1);
@@ -114,8 +120,10 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow; // ТОЛЬКО КРЕСТИК!
+            this.Controls.Add(this.comboBox1); // comboBox1 вместо textBox1
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "Form2";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Посещение";
@@ -125,7 +133,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.ComboBox comboBox1; // Заменили TextBox на ComboBox
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button1;

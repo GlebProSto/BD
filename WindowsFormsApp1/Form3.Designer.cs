@@ -2,7 +2,7 @@
 {
     partial class Form3
     {
-        /// <summary> 33
+        /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
@@ -30,7 +30,7 @@
         {
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.maskedTextBox2 = new System.Windows.Forms.MaskedTextBox(); // ЗАМЕНИЛ НА MaskedTextBox
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -58,13 +58,15 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // textBox2
+            // maskedTextBox2 (ВМЕСТО textBox2)
             // 
-            this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
-            this.textBox2.Location = new System.Drawing.Point(156, 101);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(427, 34);
-            this.textBox2.TabIndex = 9;
+            this.maskedTextBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
+            this.maskedTextBox2.Location = new System.Drawing.Point(156, 101);
+            this.maskedTextBox2.Mask = "+7 (000) 000-00-00"; // Маска для телефона
+            this.maskedTextBox2.Name = "maskedTextBox2";
+            this.maskedTextBox2.Size = new System.Drawing.Size(427, 34);
+            this.maskedTextBox2.TabIndex = 9;
+            this.maskedTextBox2.ValidatingType = null;
             // 
             // label2
             // 
@@ -102,24 +104,23 @@
             this.ClientSize = new System.Drawing.Size(604, 250);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.maskedTextBox2); // ЗАМЕНИЛ textBox2 на maskedTextBox2
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "Form3";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "ц";
+            this.Text = "Клиент";
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
 
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.MaskedTextBox maskedTextBox2; 
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox1;

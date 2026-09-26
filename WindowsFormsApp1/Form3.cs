@@ -19,16 +19,25 @@ namespace WindowsFormsApp1
             this.dataSet1 = dataSet1;
             this.newClient = newClient;
 
-            // Центрирование диалога над родителем
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 
-            // Ограничение ввода в поле телефона: только цифры и '+' в начале
             try
             {
-                this.textBox2.KeyPress += TextBoxPhone_KeyPress;
-                this.textBox1.KeyPress += TextBoxFIO_KeyPress; // <-- Подключаем проверку ФИО
+                this.textBox1.KeyPress += TextBoxFIO_KeyPress;
+                this.textBox1.KeyDown += TextBoxFIO_KeyDown;
+                this.textBox1.AcceptsReturn = false;
+                this.textBox1.Multiline = false;
                 this.textBox1.ContextMenuStrip = CreateBasicContextMenu();
-                this.textBox2.ContextMenuStrip = CreateBasicContextMenu();
+                this.maskedTextBox2.ContextMenuStrip = CreateBasicContextMenu();
+
+                // При клике на поле телефона — курсор после скобки
+                this.maskedTextBox2.Click += MaskedTextBox2_Click;
+                // При входе в поле телефона (Tab) — курсор после скобки
+                this.maskedTextBox2.Enter += MaskedTextBox2_Enter;
+                // При нажатии Enter в поле телефона — как кнопка ОК
+                this.maskedTextBox2.KeyDown += MaskedTextBox2_KeyDown;
+
+                this.textBox1.KeyDown += TextBoxFIO_KeyDown_Enter;
             }
             catch { }
 
@@ -42,12 +51,63 @@ namespace WindowsFormsApp1
                 {
                     DataRowView row = dataView[0];
                     textBox1.Text = row["FCs"].ToString();
-                    textBox2.Text = row["Phone"].ToString();
+                    maskedTextBox2.Text = row["Phone"].ToString();
                 }
             }
             else
             {
                 this.Text = "Добавление клиента";
+            }
+
+            // При открытии формы — фокус на ФИО
+            this.Shown += (s, e) =>
+            {
+                textBox1.Focus();
+            };
+        }
+
+        // При клике на поле телефона — курсор после скобки (позиция 4)
+        private void MaskedTextBox2_Click(object sender, EventArgs e)
+        {
+            maskedTextBox2.SelectionStart = 4;
+            maskedTextBox2.SelectionLength = 0;
+        }
+
+        // При входе в поле телефона — курсор после скобки
+        private void MaskedTextBox2_Enter(object sender, EventArgs e)
+        {
+            maskedTextBox2.SelectionStart = 4;
+            maskedTextBox2.SelectionLength = 0;
+        }
+
+        // При нажатии Enter в поле телефона — как кнопка ОК
+        private void MaskedTextBox2_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                e.Handled = true;
+                // Вызываем ту же логику, что и кнопка ОК
+                button1_Click(sender, e);
+            }
+        }
+
+        private void TextBoxFIO_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                e.Handled = true;
+            }
+        }
+
+        private void TextBoxFIO_KeyDown_Enter(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                e.Handled = true;
+                maskedTextBox2.Focus(); // Переход на телефон
             }
         }
 
@@ -57,7 +117,8 @@ namespace WindowsFormsApp1
             {
                 DataRow newRow = dataSet1.Client.NewRow();
                 newRow["FCs"] = textBox1.Text;
-                newRow["Phone"] = textBox2.Text;
+                string phone = maskedTextBox2.Text.Replace(" ", "").Replace("(", "").Replace(")", "").Replace("-", "").Replace("+", "");
+                newRow["Phone"] = phone;
                 dataSet1.Client.Rows.Add(newRow);
                 dataSet1.Client.AcceptChanges();
                 NewId = Convert.ToInt64(newRow["ID_C"].ToString());
@@ -68,7 +129,8 @@ namespace WindowsFormsApp1
                 if (rows.Length > 0)
                 {
                     rows[0]["FCs"] = textBox1.Text;
-                    rows[0]["Phone"] = textBox2.Text;
+                    string phone = maskedTextBox2.Text.Replace(" ", "").Replace("(", "").Replace(")", "").Replace("-", "").Replace("+", "");
+                    rows[0]["Phone"] = phone;
                     dataSet1.Client.AcceptChanges();
                     NewId = editId;
                 }
@@ -80,14 +142,12 @@ namespace WindowsFormsApp1
             saveb = false;
             string FillingErrors = "";
 
-            if (textBox1.Text == "")
+            if (string.IsNullOrWhiteSpace(textBox1.Text))
                 FillingErrors = "ФИО не заполнено.\n";
-            if (textBox2.Text == "")
-                FillingErrors = FillingErrors + "Телефон не заполнен.\n";
 
-            if (!System.Text.RegularExpressions.Regex.IsMatch(textBox2.Text.Trim(), "^(8|\\+7)\\d{10}$"))
+            if (!maskedTextBox2.MaskCompleted)
             {
-                FillingErrors += "Телефон должен начинаться с 8 или +7 и содержать далее 10 цифр.\n";
+                FillingErrors += "Телефон заполнен не полностью. Введите номер целиком.\n";
             }
 
             if (FillingErrors != "")
@@ -109,47 +169,15 @@ namespace WindowsFormsApp1
             }
         }
 
-        private void TextBoxPhone_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
-        {
-            // Разрешаем цифры и управляющие символы
-            if (char.IsControl(e.KeyChar))
-                return;
-
-            TextBox tb = sender as TextBox;
-            if (tb == null)
-            {
-                e.Handled = true;
-                return;
-            }
-
-            if (e.KeyChar == '+')
-            {
-                // '+' только в начале
-                if (tb.SelectionStart != 0 || tb.Text.Contains("+"))
-                    e.Handled = true;
-                return;
-            }
-
-            if (!char.IsDigit(e.KeyChar))
-            {
-                e.Handled = true;
-            }
-        }
-
         private void TextBoxFIO_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
         {
-            // Разрешаем управляющие символы (Backspace, Delete и т.д.)
             if (char.IsControl(e.KeyChar))
                 return;
-
-            // Блокируем цифры
             if (char.IsDigit(e.KeyChar))
             {
                 e.Handled = true;
                 return;
             }
-
-            // Разрешаем только буквы, пробелы, дефис и апостроф
             if (!char.IsLetter(e.KeyChar) && e.KeyChar != ' ' && e.KeyChar != '-' && e.KeyChar != '\'')
             {
                 e.Handled = true;
